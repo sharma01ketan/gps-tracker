@@ -13,4 +13,4 @@ const locationSchema = mongoose.Schema({
     timestamps: true
 });
 
-export const Location = ("Location", locationSchema)
+export const Location = mongoose.model("Location", locationSchema);
