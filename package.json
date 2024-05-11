@@ -5,11 +5,14 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js"
+    "dev": "nodemon -r dotenv/config --experimental-json-modules src/index.js",
+    "test": "jest"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "esm": "^3.2.25",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.0",
     "prettier": "^3.2.5"
   },
