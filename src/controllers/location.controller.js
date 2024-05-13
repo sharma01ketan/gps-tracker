@@ -3,6 +3,7 @@ import { ApiError } from '../utils/ApiError.js';
 import { Location } from '../models/location.model.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import haversine from 'haversine-distance'
+import {User} from '../models/user.model.js'
 
 const createLocation = asyncHandler(async (req, res) => {
     const { latitude, longitude } = req.body;
@@ -94,4 +95,48 @@ const calculateDistance = asyncHandler(async (req, res) => {
     }));
 });
 
-export { createLocation, calculateDistance, closestDistance }
+
+const addLocation = asyncHandler(async (req, res) => {
+
+    const { latitude, longitude, username } = req.body;
+    console.log(req.body)
+    console.log(`${latitude} ${longitude} ${username} addLocation`);
+    // const currentUser = req.body; 
+    // console.log(`currentUser is: ${currentUser}`)
+    try {
+        // Find the user's document in the database
+        // const user = await User.findById(username._id);
+        const user = await User.findOne({
+            $or:[{username}]
+        })
+        console.log(`User id is ${user._id}`)
+
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+
+        // Add the new location to the user's locations array
+        const location = await Location.create({
+            latitude,
+            longitude
+        });
+
+        // user.locations.push({ latitude, longitude });
+        user.locations.push(location);
+
+        await user.save();
+
+        // Save the updated user document
+
+        console.log(`Location added to user: ${latitude} ${longitude}`);
+
+        return res.status(201).json(
+            new ApiResponse(201, user.locations, 'Location added to user successfully')
+        );
+    } catch (error) {
+        throw new ApiError(500, 'Failed to add location to user');
+    }
+});
+
+
+export { createLocation, calculateDistance, closestDistance ,addLocation}

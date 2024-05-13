@@ -1,6 +1,7 @@
 import mongoose, {Schema} from "mongoose";
 import jwt from "jsonwebtoken"
 import bcrypt from "bcrypt"
+// import  Location from './location.model.js'
 
 const userSchema = new Schema(
     {
@@ -18,7 +19,13 @@ const userSchema = new Schema(
         },
         refreshToken: {
             type: String
-        }
+        },
+        locations: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Location'
+            }
+        ]
     },
     {
         timestamps: true
