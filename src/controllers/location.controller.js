@@ -101,11 +101,8 @@ const addLocation = asyncHandler(async (req, res) => {
     const { latitude, longitude, username } = req.body;
     console.log(req.body)
     console.log(`${latitude} ${longitude} ${username} addLocation`);
-    // const currentUser = req.body; 
-    // console.log(`currentUser is: ${currentUser}`)
+    
     try {
-        // Find the user's document in the database
-        // const user = await User.findById(username._id);
         const user = await User.findOne({
             $or:[{username}]
         })
@@ -115,18 +112,14 @@ const addLocation = asyncHandler(async (req, res) => {
             throw new ApiError(404, "User not found");
         }
 
-        // Add the new location to the user's locations array
         const location = await Location.create({
             latitude,
             longitude
         });
 
-        // user.locations.push({ latitude, longitude });
         user.locations.push(location);
 
         await user.save();
-
-        // Save the updated user document
 
         console.log(`Location added to user: ${latitude} ${longitude}`);
 
@@ -138,5 +131,28 @@ const addLocation = asyncHandler(async (req, res) => {
     }
 });
 
+const allLocations = asyncHandler(async (req, res) => {
+    try {
+        const { username } = req.body; // Assuming username is sent in the request body
 
-export { createLocation, calculateDistance, closestDistance ,addLocation}
+        const user = await User.findOne({ username });
+
+        if (!user) {
+            throw new ApiError(404, "User not found");
+        }
+
+        const locations = user.locations; // Accessing locations after user is retrieved
+
+        console.log(`User id is ${user._id}`);
+        console.log(`The locations array is: ${locations}`);
+
+        return res.status(200).json(new ApiResponse(200, locations, 'Returned all locations'));
+    } catch (error) {
+        console.error('Error fetching locations:', error);
+        throw new ApiError(500, 'Failed to fetch locations');
+    }
+});
+
+
+
+export { createLocation, calculateDistance, closestDistance ,addLocation, allLocations}

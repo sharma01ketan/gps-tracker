@@ -48,7 +48,8 @@ const registerUser = asyncHandler( async (req, res) => {
         password
     })
 
-    const createdUser = await User.findById(user._id).select(
+    const createdUser = await User.findById(user._id)
+    .select(
         "-password -refreshToken"
     )
 

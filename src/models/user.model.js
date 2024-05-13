@@ -8,10 +8,7 @@ const userSchema = new Schema(
         username: {
             type: String,
             required: true,
-            unique: true,
-            lowercase: true,
-            trim: true, 
-            index: true
+            unique: true
         },
         password: {
             type: String,
@@ -46,10 +43,10 @@ userSchema.methods.isPasswordCorrect = async function(password){
 userSchema.methods.generateAccessToken = function(){
     return jwt.sign(
         {
-            _id: this._id,
-            email: this.email,
+            // _id: this._id,
+            // email: 'ketan',
             username: this.username,
-            fullName: this.fullName
+            // fullName: this.fullName
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
