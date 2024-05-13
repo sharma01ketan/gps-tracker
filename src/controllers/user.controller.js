@@ -28,7 +28,7 @@ const registerUser = asyncHandler( async (req, res) => {
     // })
 
     const {username,password} = req.body
-    console.log(`${username} ${password}`)
+    console.log(`The username and password ${username} ${password}`)
 
     if(
         [username,password].some((field)=>field?.trim()==="")
@@ -59,6 +59,9 @@ const registerUser = asyncHandler( async (req, res) => {
     return res.status(201).json(
         new ApiResponse(200, createdUser, "User registered Successfully")
     )
+
+   
+
 })
 
 const loginUser = asyncHandler(async (req, res) =>{
@@ -70,7 +73,7 @@ const loginUser = asyncHandler(async (req, res) =>{
     //send cookie
 
     const {email, username, password} = req.body
-    console.log(email);
+    console.log(`The email is ${email}`);
 
     if (!username && !email) {
         throw new ApiError(400, "username or email is required")

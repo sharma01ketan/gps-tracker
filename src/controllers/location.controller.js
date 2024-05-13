@@ -6,7 +6,7 @@ import haversine from 'haversine-distance'
 
 const createLocation = asyncHandler(async (req, res) => {
     const { latitude, longitude } = req.body;
-    console.log(`${latitude} ${longitude}`)
+    console.log(`${latitude} ${longitude}createlocation`)
 
     if(
         [latitude,longitude].some((field)=>field?.trim()==="")
@@ -61,7 +61,7 @@ const closestDistance = asyncHandler(async (req, res) => {
     let closestDistance = Infinity;
 
     locations.forEach(location => {
-        console.log(latitude, longitude);
+        console.log(`Latitude and Longitude is ${latitude}, ${longitude}`);
         const distance = haversine({ latitude, longitude }, { latitude: location.latitude, longitude: location.longitude });
         if (distance < closestDistance) {
             closestDistance = distance;
