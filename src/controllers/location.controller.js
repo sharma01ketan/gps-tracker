@@ -135,13 +135,16 @@ const allLocations = asyncHandler(async (req, res) => {
     try {
         const { username } = req.body; // Assuming username is sent in the request body
 
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ username }).populate('locations')
 
         if (!user) {
             throw new ApiError(404, "User not found");
         }
 
-        const locations = user.locations; // Accessing locations after user is retrieved
+        const locations = user.locations.map(location =>({
+            latitude: location.latitude,
+            longitude: location.longitude
+        }))
 
         console.log(`User id is ${user._id}`);
         console.log(`The locations array is: ${locations}`);
@@ -153,6 +156,22 @@ const allLocations = asyncHandler(async (req, res) => {
     }
 });
 
+const getLocationById = asyncHandler(async (req, res) => {
+    const { locationId } = req.params;
+
+    const location = await Location.findById(locationId);
+
+    if (!location) {
+        throw new ApiError(404, "Location not found");
+    }
+
+    return res.status(200).json({
+        statusCode: 200,
+        data: location,
+        message: "Location retrieved successfully",
+        success: true
+    });
+});
 
 
-export { createLocation, calculateDistance, closestDistance ,addLocation, allLocations}
+export { createLocation, calculateDistance, closestDistance ,addLocation, allLocations, getLocationById}
