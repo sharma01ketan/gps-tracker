@@ -8,33 +8,26 @@ import {User} from '../models/user.model.js'
 const createLocation = asyncHandler(async (req, res) => {
     const { latitude, longitude } = req.body;
     console.log(`${latitude} ${longitude}createlocation`)
-
     if(
         [latitude,longitude].some((field)=>field?.trim()==="")
     ){
         throw new ApiError(400,"All Fields are Required")
     }
-
     const existedLocation = await Location.findOne({
         $or:[{latitude,longitude}]
     })
-
     if(existedLocation){
         throw new ApiError(409,"Location already exists")
     }
-
     try {
         const location = await Location.create({
             latitude,
             longitude
         });
-
         const createdLocation = await Location.findById(location._id)
-
         if(!createLocation){
             throw new ApiError(500, "Something went wrong while registering the location")
         }
-
         console.log(`Location Added: ${latitude} ${longitude}`)
         return res.status(201).json(
             new ApiResponse(201, location, 'Location saved successfully')
@@ -44,7 +37,7 @@ const createLocation = asyncHandler(async (req, res) => {
     }
 });
 
-
+//Code Snippet from location.routes.js
 const closestDistance = asyncHandler(async (req, res) => {
     const { latitude, longitude } = req.body;
     console.log("The request body is:", req.body);
@@ -79,6 +72,7 @@ const closestDistance = asyncHandler(async (req, res) => {
     });
 });
 
+//Code Snippet from location.routes.js
 const calculateDistance = asyncHandler(async (req, res) => {
     const { coordinate1, coordinate2 } = req.body;
     console.log("The request body is:", req.body);
@@ -95,34 +89,26 @@ const calculateDistance = asyncHandler(async (req, res) => {
     }));
 });
 
-
+//Code Snippet from location.routes.js
 const addLocation = asyncHandler(async (req, res) => {
-
     const { latitude, longitude, username } = req.body;
     console.log(req.body)
     console.log(`${latitude} ${longitude} ${username} addLocation`);
-    
     try {
         const user = await User.findOne({
             $or:[{username}]
         })
         console.log(`User id is ${user._id}`)
-
         if (!user) {
             throw new ApiError(404, "User not found");
         }
-
         const location = await Location.create({
             latitude,
             longitude
         });
-
         user.locations.push(location);
-
         await user.save();
-
         console.log(`Location added to user: ${latitude} ${longitude}`);
-
         return res.status(201).json(
             new ApiResponse(201, user.locations, 'Location added to user successfully')
         );
@@ -131,6 +117,7 @@ const addLocation = asyncHandler(async (req, res) => {
     }
 });
 
+//Code Snippet from location.routes.js
 const allLocations = asyncHandler(async (req, res) => {
     try {
         const { username } = req.body; // Assuming username is sent in the request body
